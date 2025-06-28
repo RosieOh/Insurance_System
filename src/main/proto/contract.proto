@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.insurance.grpc";
+option java_outer_classname = "ContractProto";
+
+service ContractService {
+  rpc GetContractById (ContractIdRequest) returns (ContractDetailResponse);
+}
+
+message ContractIdRequest {
+  int64 contractId = 1;
+}
+
+message ContractDetailResponse {
+  bool success = 1;
+  string message = 2;
+  int64 id = 3;
+  string customerName = 4;
+  string productName = 5;
+  string startDate = 6;
+  string endDate = 7;
+} 
