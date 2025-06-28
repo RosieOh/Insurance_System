@@ -2,6 +2,22 @@
 
 보험 관리 시스템으로, HashMap 형태의 데이터를 처리할 수 있는 공통 로직과 보안 감사 기능을 제공합니다.
 
+![Insurance System Overview](images/Mermaid%20Chart%20-%20Create%20complex,%20visual%20diagrams%20with%20text.%20A%20smarter%20way%20of%20creating%20diagrams.-2025-06-28-100143.png)
+
+## 📋 목차
+- [주요 기능](#주요-기능)
+- [시스템 아키텍처](#시스템-아키텍처)
+- [Use Case 다이어그램](#use-case-다이어그램)
+- [서비스 아키텍처](#서비스-아키텍처)
+- [데이터 플로우](#데이터-플로우)
+- [사용 예시](#사용-예시)
+- [보안 감사 기능](#보안-감사-기능)
+- [기존 API와의 호환성](#기존-api와의-호환성)
+- [프로젝트 구조](#프로젝트-구조)
+- [실행 방법](#실행-방법)
+- [주요 특징](#주요-특징)
+- [보안 고려사항](#보안-고려사항)
+
 ## 주요 기능
 
 ### 1. HashMap 데이터 처리
@@ -19,6 +35,223 @@
 - `/api/map-data/{entityType}` - HashMap으로 엔티티 생성/조회
 - `/api/map-data/{entityType}/{id}` - HashMap으로 엔티티 수정/삭제
 - `/api/security/audit` - 보안 감사 로그 조회
+
+## 🏗️ 시스템 아키텍처
+
+![System Architecture](images/Mermaid%20Chart%20-%20Create%20complex,%20visual%20diagrams%20with%20text.%20A%20smarter%20way%20of%20creating%20diagrams.-2025-06-28-100208.png)
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Web[웹 브라우저]
+        Mobile[모바일 앱]
+        API[API 클라이언트]
+    end
+
+    subgraph "Presentation Layer"
+        RestAPI[REST API]
+        GraphQL[GraphQL]
+        Security[보안 필터]
+    end
+
+    subgraph "Business Layer"
+        MapDataController[MapData Controller]
+        SecurityAuditController[보안 감사 Controller]
+        KafkaTestController[카프카 테스트 Controller]
+        
+        MapDataConverter[MapData Converter]
+        SecurityAuditService[보안 감사 Service]
+        ContractService[계약 Service]
+        CustomerService[고객 Service]
+        ProductService[상품 Service]
+    end
+
+    subgraph "Data Layer"
+        JPA[JPA Repository]
+        Kafka[Kafka]
+        H2DB[(H2 Database)]
+    end
+
+    subgraph "Infrastructure Layer"
+        SecurityAspect[보안 감사 AOP]
+        LogAspect[로깅 AOP]
+        AuditEntity[감사 엔티티]
+    end
+
+    Web --> RestAPI
+    Mobile --> RestAPI
+    API --> RestAPI
+    
+    RestAPI --> Security
+    Security --> MapDataController
+    Security --> SecurityAuditController
+    Security --> KafkaTestController
+    
+    MapDataController --> MapDataConverter
+    MapDataController --> ContractService
+    MapDataController --> CustomerService
+    MapDataController --> ProductService
+    
+    SecurityAuditController --> SecurityAuditService
+    KafkaTestController --> ContractService
+    
+    ContractService --> JPA
+    CustomerService --> JPA
+    ProductService --> JPA
+    SecurityAuditService --> JPA
+    
+    ContractService --> Kafka
+    Kafka --> ContractEventConsumer[계약 이벤트 Consumer]
+    
+    JPA --> H2DB
+    
+    SecurityAspect --> SecurityAuditService
+    LogAspect --> SecurityAuditService
+    AuditEntity --> H2DB
+```
+
+## 👥 Use Case 다이어그램
+
+![Use Case Diagram](images/Mermaid%20Chart%20-%20Create%20complex,%20visual%20diagrams%20with%20text.%20A%20smarter%20way%20of%20creating%20diagrams.-2025-06-28-100239.png)
+
+```mermaid
+graph TB
+    subgraph "Actors"
+        Admin[관리자]
+        User[사용자]
+        System[시스템]
+    end
+
+    subgraph "Use Cases"
+        UC1[고객 관리]
+        UC2[계약 관리]
+        UC3[보험상품 관리]
+        UC4[보안 감사]
+        UC5[카프카 이벤트 처리]
+        UC6[HashMap 데이터 처리]
+        UC7[로그 조회]
+    end
+
+    subgraph "Entities"
+        Customer[고객]
+        Contract[계약]
+        Product[보험상품]
+        AuditLog[감사 로그]
+        KafkaEvent[카프카 이벤트]
+    end
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC7
+    
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC6
+    
+    System --> UC5
+    System --> UC4
+    
+    UC1 --> Customer
+    UC2 --> Contract
+    UC3 --> Product
+    UC4 --> AuditLog
+    UC5 --> KafkaEvent
+    UC6 --> Customer
+    UC6 --> Contract
+    UC6 --> Product
+    UC7 --> AuditLog
+```
+
+## 🔄 서비스 아키텍처
+
+![Service Architecture](images/Mermaid%20Chart%20-%20Create%20complex,%20visual%20diagrams%20with%20text.%20A%20smarter%20way%20of%20creating%20diagrams.-2025-06-28-100259.png)
+
+```mermaid
+graph LR
+    subgraph "API Gateway Layer"
+        Gateway[API Gateway]
+    end
+
+    subgraph "Service Layer"
+        MapDataService[MapData Service]
+        SecurityService[Security Service]
+        ContractService[Contract Service]
+        CustomerService[Customer Service]
+        ProductService[Product Service]
+    end
+
+    subgraph "Event Layer"
+        KafkaProducer[Kafka Producer]
+        KafkaConsumer[Kafka Consumer]
+        EventBus[Event Bus]
+    end
+
+    subgraph "Data Layer"
+        Repository[Repository Layer]
+        Cache[Cache Layer]
+        DB[(Database)]
+    end
+
+    subgraph "Infrastructure Layer"
+        SecurityAspect[Security Aspect]
+        LoggingAspect[Logging Aspect]
+        AuditAspect[Audit Aspect]
+    end
+
+    Gateway --> MapDataService
+    Gateway --> SecurityService
+    Gateway --> ContractService
+    Gateway --> CustomerService
+    Gateway --> ProductService
+
+    MapDataService --> Repository
+    SecurityService --> Repository
+    ContractService --> Repository
+    CustomerService --> Repository
+    ProductService --> Repository
+
+    ContractService --> KafkaProducer
+    KafkaProducer --> EventBus
+    EventBus --> KafkaConsumer
+
+    Repository --> DB
+    Repository --> Cache
+
+    SecurityAspect --> SecurityService
+    LoggingAspect --> SecurityService
+    AuditAspect --> SecurityService
+```
+
+## 📊 데이터 플로우
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Controller
+    participant Service
+    participant Repository
+    participant Database
+    participant Kafka
+    participant Consumer
+    participant Audit
+
+    Client->>Controller: HashMap 데이터 요청
+    Controller->>Audit: 보안 감사 시작
+    Controller->>Service: 비즈니스 로직 실행
+    Service->>Repository: 데이터 조회/저장
+    Repository->>Database: SQL 실행
+    Database-->>Repository: 결과 반환
+    Repository-->>Service: 데이터 반환
+    Service->>Kafka: 이벤트 발행
+    Kafka->>Consumer: 이벤트 수신
+    Consumer->>Audit: 이벤트 처리 로그
+    Service-->>Controller: 결과 반환
+    Controller->>Audit: 보안 감사 완료
+     Controller-->>Client: 응답 반환
+```
 
 ## 사용 예시
 
@@ -165,7 +398,8 @@ src/main/java/com/insurance/
 │   │   └── MapDataConverter.java        # HashMap-엔티티 변환 유틸리티
 │   ├── controller/
 │   │   ├── MapDataController.java       # HashMap 데이터 처리 공통 컨트롤러
-│   │   └── SecurityAuditController.java # 보안 감사 로그 조회 컨트롤러
+│   │   ├── SecurityAuditController.java # 보안 감사 로그 조회 컨트롤러
+│   │   └── KafkaTestController.java     # 카프카 테스트 컨트롤러
 │   ├── security/
 │   │   └── WebRemoteAddrDetails.java    # IP 주소 및 사용자 에이전트 추출
 │   ├── audit/
@@ -180,6 +414,10 @@ src/main/java/com/insurance/
 │   ├── contract/
 │   ├── customer/
 │   └── insuranceProduct/
+├── Global/
+│   └── kafka/
+│       ├── ContractEventProducer.java   # 카프카 프로듀서
+│       └── ContractEventConsumer.java   # 카프카 컨슈머
 └── InsuranceApplication.java
 ```
 
@@ -212,6 +450,7 @@ src/main/java/com/insurance/
 7. **IP 추적**: 프록시 환경을 고려한 정확한 IP 주소 추출
 8. **성능 모니터링**: API 실행 시간 측정 및 기록
 9. **보안 통계**: 보안 이벤트에 대한 통계 및 분석 기능
+10. **이벤트 기반 아키텍처**: Kafka를 통한 비동기 이벤트 처리
 
 ## 보안 고려사항
 
