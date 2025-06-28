@@ -1,5 +1,6 @@
 package com.insurance.common.controller;
 
+import com.insurance.common.annotation.SecurityAudit;
 import com.insurance.common.dto.MapDataRequest;
 import com.insurance.common.response.ApiResponse;
 import com.insurance.common.util.MapDataConverter;
@@ -34,6 +35,7 @@ public class MapDataController {
      * HashMap 데이터로 엔티티를 생성합니다.
      */
     @PostMapping("/{entityType}")
+    @SecurityAudit(action = "CREATE", resource = "ENTITY", resourceIdParam = "entityType", includeRequestData = true)
     public ApiResponse<Map<String, Object>> createEntity(
             @PathVariable String entityType,
             @RequestBody MapDataRequest request) {
@@ -51,6 +53,7 @@ public class MapDataController {
      * HashMap 데이터로 엔티티를 업데이트합니다.
      */
     @PutMapping("/{entityType}/{id}")
+    @SecurityAudit(action = "UPDATE", resource = "ENTITY", resourceIdParam = "id", includeRequestData = true)
     public ApiResponse<Map<String, Object>> updateEntity(
             @PathVariable String entityType,
             @PathVariable Long id,
@@ -69,6 +72,7 @@ public class MapDataController {
      * ID로 엔티티를 조회합니다.
      */
     @GetMapping("/{entityType}/{id}")
+    @SecurityAudit(action = "READ", resource = "ENTITY", resourceIdParam = "id")
     public ApiResponse<Map<String, Object>> getEntity(
             @PathVariable String entityType,
             @PathVariable Long id) {
@@ -90,6 +94,7 @@ public class MapDataController {
      * 모든 엔티티를 조회합니다.
      */
     @GetMapping("/{entityType}")
+    @SecurityAudit(action = "READ_ALL", resource = "ENTITY", resourceIdParam = "entityType")
     public ApiResponse<List<Map<String, Object>>> getAllEntities(
             @PathVariable String entityType) {
         
@@ -108,6 +113,7 @@ public class MapDataController {
      * 엔티티를 삭제합니다.
      */
     @DeleteMapping("/{entityType}/{id}")
+    @SecurityAudit(action = "DELETE", resource = "ENTITY", resourceIdParam = "id")
     public ApiResponse<Void> deleteEntity(
             @PathVariable String entityType,
             @PathVariable Long id) {
