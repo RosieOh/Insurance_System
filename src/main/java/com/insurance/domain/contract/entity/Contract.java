@@ -1,21 +1,38 @@
 package com.insurance.domain.contract.entity;
 
-import javax.persistence.*;
+import com.insurance.common.audit.AuditEntity;
+import com.insurance.domain.customer.entity.Customer;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-public class Contract {
+@Table(name = "contract")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Contract extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String customerName;
-    private String productName;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-    // 생성자, getter/setter
-    public Contract() {}
+    @Column(name = "customer_name")
+    private String customerName;
+    
+    @Column(name = "product_name")
+    private String productName;
+    
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     public Contract(String customerName, String productName, LocalDate startDate, LocalDate endDate) {
         this.customerName = customerName;
@@ -23,14 +40,4 @@ public class Contract {
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
-    public Long getId() { return id; }
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 } 
