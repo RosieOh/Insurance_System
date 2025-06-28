@@ -1,8 +1,8 @@
-package com.insurance.controller;
+package com.insurance.domain.customer.controller;
 
-import com.insurance.domain.Customer;
-import com.insurance.service.CustomerService;
-import com.core.common.response.ApiResponse;
+import com.insurance.domain.customer.entity.Customer;
+import com.insurance.domain.customer.service.CustomerService;
+import com.insurance.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,7 @@
 package com.insurance.domain.customer.entity;
 
 import com.insurance.common.audit.AuditEntity;
+import com.insurance.domain.contract.entity.Contract;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
