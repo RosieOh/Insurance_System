@@ -1,4 +1,4 @@
-package com.core.common.exception;
+package com.insurance.common.exception;
 
 import lombok.Getter;
 
