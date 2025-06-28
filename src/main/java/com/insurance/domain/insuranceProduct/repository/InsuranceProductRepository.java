@@ -1,6 +1,6 @@
-package com.insurance.repository;
+package com.insurance.domain.insuranceProduct.repository;
 
-import com.insurance.domain.InsuranceProduct;
+import com.insurance.domain.insuranceProduct.entity.InsuranceProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

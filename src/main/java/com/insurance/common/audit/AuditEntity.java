@@ -1,4 +1,4 @@
-package com.core.common.audit;
+package com.insurance.common.audit;
 
 import java.time.LocalDateTime;
 

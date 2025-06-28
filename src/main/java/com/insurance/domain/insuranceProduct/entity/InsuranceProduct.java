@@ -1,6 +1,6 @@
-package com.insurance.domain;
+package com.insurance.domain.insuranceProduct.entity;
 
-import com.core.common.audit.AuditEntity;
+import com.insurance.common.audit.AuditEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

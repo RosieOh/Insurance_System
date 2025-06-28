@@ -1,4 +1,4 @@
-package com.core.common.response;
+package com.insurance.common.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
