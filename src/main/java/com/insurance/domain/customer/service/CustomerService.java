@@ -1,8 +1,8 @@
-package com.insurance.service;
+package com.insurance.domain.customer.service;
 
-import com.insurance.domain.Customer;
-import com.insurance.repository.CustomerRepository;
-import com.core.common.exception.BusinessException;
+import com.insurance.domain.customer.entity.Customer;
+import com.insurance.domain.customer.repository.CustomerRepository;
+import com.insurance.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
