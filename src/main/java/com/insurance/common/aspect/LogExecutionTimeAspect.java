@@ -1,21 +1,19 @@
-package com.core.common.aspect;
+package com.insurance.common.aspect;
 
+import com.insurance.common.annotation.LogExecutionTime;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-import com.core.common.annotation.LogExecutionTime;
-
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * @LogExecutionTime 어노테이션의 동작을 구현하는 AOP Aspect
- * 메소드의 실행 시간을 측정하고 로깅합니다.
+ * 메서드 실행 시간을 측정하는 AOP
+ * @LogExecutionTime 어노테이션이 붙은 메서드의 실행 시간을 로깅합니다.
  */
+@Slf4j
 @Aspect
 @Component
-@Slf4j
 public class LogExecutionTimeAspect {
 
     /**
@@ -28,28 +26,25 @@ public class LogExecutionTimeAspect {
      */
     @Around("@annotation(logExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint, LogExecutionTime logExecutionTime) throws Throwable {
-        // 메소드 실행 시작 시간 기록
         long startTime = System.currentTimeMillis();
         
-        // 원본 메소드 실행
-        Object result = joinPoint.proceed();
-        
-        // 메소드 실행 종료 시간 기록
-        long endTime = System.currentTimeMillis();
-        
-        // 로깅을 위한 메소드 정보 수집
-        String methodName = joinPoint.getSignature().getName();
-        String className = joinPoint.getTarget().getClass().getSimpleName();
-        
-        // 로그 메시지 생성
-        // value가 지정된 경우 해당 메시지를 사용하고, 그렇지 않은 경우 메소드 정보를 포함한 메시지 생성
-        String message = logExecutionTime.value().isEmpty() 
-            ? String.format("%s.%s executed in %dms", className, methodName, (endTime - startTime))
-            : String.format("%s executed in %dms", logExecutionTime.value(), (endTime - startTime));
+        try {
+            Object result = joinPoint.proceed();
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
             
-        // 실행 시간 로깅
-        log.info(message);
-        
-        return result;
+            log.info("Method: {} - Execution Time: {}ms", 
+                joinPoint.getSignature().getName(), executionTime);
+            
+            return result;
+        } catch (Exception e) {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            
+            log.error("Method: {} - Execution Time: {}ms - Error: {}", 
+                joinPoint.getSignature().getName(), executionTime, e.getMessage());
+            
+            throw e;
+        }
     }
 } 
