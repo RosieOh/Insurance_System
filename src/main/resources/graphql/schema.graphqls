@@ -1,0 +1,19 @@
+type Query {
+    contract(id: ID!): Contract
+    customer(id: ID!): Customer
+}
+
+type Contract {
+    id: ID!
+    customerName: String
+    productName: String
+    startDate: String
+    endDate: String
+}
+
+type Customer {
+    id: ID!
+    name: String
+    phone: String
+    email: String
+} 
